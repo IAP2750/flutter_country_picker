@@ -1,14 +1,14 @@
 import 'package:collection/collection.dart';
+import 'package:country_picker/src/res/country_codes.dart';
 
-import 'country.dart';
-import 'res/country_codes.dart';
+import '../country_picker.dart';
 
 class CountryService {
-  final List<Country> _countries;
 
   CountryService()
       : _countries =
             countryCodes.map((country) => Country.from(json: country)).toList();
+  final List<Country> _countries;
 
   ///Return list with all countries
   List<Country> getAll() {

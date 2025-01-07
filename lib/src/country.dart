@@ -1,12 +1,37 @@
-import 'package:country_picker/src/country_parser.dart';
 import 'package:country_picker/src/utils.dart';
 import 'package:flutter/material.dart';
 
-import 'country_localizations.dart';
+import '../country_picker.dart';
 
-///The country Model that has all the country
-///information needed from the [country_picker]
 class Country {
+  Country({
+    required this.phoneCode,
+    required this.countryCode,
+    required this.e164Sc,
+    required this.geographic,
+    required this.level,
+    required this.name,
+    required this.example,
+    required this.displayName,
+    required this.displayNameNoCountryCode,
+    required this.e164Key,
+    this.nameLocalized = '',
+    this.fullExampleWithPlusSign = '',
+  });
+
+  Country.from({required Map<String, dynamic> json})
+      : phoneCode = json['e164_cc'] as String,
+        countryCode = json['iso2_cc'] as String,
+        e164Sc = json['e164_sc'] as int,
+        geographic = json['geographic'] as bool,
+        level = json['level'] as int,
+        name = json['name'] as String,
+        example = json['example'] as String,
+        displayName = json['display_name'] as String,
+        fullExampleWithPlusSign =
+            (json['full_example_with_plus_sign'] ?? '') as String,
+        displayNameNoCountryCode = json['display_name_no_e164_cc'] as String,
+        e164Key = json['e164_key'] as String;
   static Country worldWide = Country(
     phoneCode: '',
     countryCode: 'WW',
@@ -42,7 +67,7 @@ class Country {
   final String displayName;
 
   ///An example of a telephone number with the phone code and plus sign
-  final String? fullExampleWithPlusSign;
+  final String fullExampleWithPlusSign;
 
   ///Country name (country code)
 
@@ -59,34 +84,6 @@ class Country {
     return CountryLocalizations.of(context)
         ?.countryName(countryCode: countryCode);
   }
-
-  Country({
-    required this.phoneCode,
-    required this.countryCode,
-    required this.e164Sc,
-    required this.geographic,
-    required this.level,
-    required this.name,
-    this.nameLocalized = '',
-    required this.example,
-    required this.displayName,
-    required this.displayNameNoCountryCode,
-    required this.e164Key,
-    this.fullExampleWithPlusSign,
-  });
-
-  Country.from({required Map<String, dynamic> json})
-      : phoneCode = json['e164_cc'],
-        countryCode = json['iso2_cc'],
-        e164Sc = json['e164_sc'],
-        geographic = json['geographic'],
-        level = json['level'],
-        name = json['name'],
-        example = json['example'],
-        displayName = json['display_name'],
-        fullExampleWithPlusSign = json['full_example_with_plus_sign'],
-        displayNameNoCountryCode = json['display_name_no_e164_cc'],
-        e164Key = json['e164_key'];
 
   static Country parse(String country) {
     if (country == worldWide.countryCode) {
@@ -105,7 +102,7 @@ class Country {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     data['e164_cc'] = phoneCode;
     data['iso2_cc'] = countryCode;
     data['e164_sc'] = e164Sc;
@@ -121,17 +118,17 @@ class Country {
   }
 
   bool startsWith(String query, CountryLocalizations? localizations) {
-    String _query = query;
-    if (query.startsWith("+")) {
-      _query = query.replaceAll("+", "").trim();
+    var query0 = query;
+    if (query.startsWith('+')) {
+      query0 = query.replaceAll('+', '').trim();
     }
-    return phoneCode.startsWith(_query.toLowerCase()) ||
-        name.toLowerCase().startsWith(_query.toLowerCase()) ||
-        countryCode.toLowerCase().startsWith(_query.toLowerCase()) ||
+    return phoneCode.startsWith(query0.toLowerCase()) ||
+        name.toLowerCase().startsWith(query0.toLowerCase()) ||
+        countryCode.toLowerCase().startsWith(query0.toLowerCase()) ||
         (localizations
                 ?.countryName(countryCode: countryCode)
                 ?.toLowerCase()
-                .startsWith(_query.toLowerCase()) ??
+                .startsWith(query0.toLowerCase()) ??
             false);
   }
 
@@ -140,21 +137,12 @@ class Country {
   @override
   String toString() => 'Country(countryCode: $countryCode, name: $name)';
 
-  @override
-  bool operator ==(Object other) {
-    if (other is Country) {
-      return other.countryCode == countryCode;
-    }
-
-    return super == other;
-  }
-
-  @override
-  int get hashCode => countryCode.hashCode;
-
   /// provides country flag as emoji.
   /// Can be displayed using
   ///
   ///```Text(country.flagEmoji)```
   String get flagEmoji => Utils.countryCodeToEmoji(countryCode);
+
+  @override
+  int get hashCode => name.hashCode;
 }

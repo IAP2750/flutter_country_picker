@@ -74,33 +74,25 @@ class HomePage extends StatelessWidget {
           onPressed: () {
             showCountryPicker(
               context: context,
-              //Optional.  Can be used to exclude(remove) one ore more country from the countries list (optional).
-              exclude: <String>['KN', 'MF'],
-              favorite: <String>['SE'],
+              favorite: <String>['US'],
               //Optional. Shows phone code before the country name.
-              showPhoneCode: true,
-              onSelect: (Country country) {
-                print('Select country: ${country.displayName}');
-              },
+              showPhoneCode: false,
+              onSelect: (Country country) {},
               // Optional. Sheet moves when keyboard opens.
-              moveAlongWithKeyboard: false,
+              moveAlongWithKeyboard: true,
               // Optional. Sets the theme for the country list picker.
               countryListTheme: CountryListThemeData(
                 // Optional. Sets the border radius for the bottomsheet.
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40.0),
-                  topRight: Radius.circular(40.0),
+                  topLeft: Radius.circular(24.0),
+                  topRight: Radius.circular(24.0),
                 ),
                 // Optional. Styles the search field.
                 inputDecoration: InputDecoration(
                   labelText: 'Search',
                   hintText: 'Start typing to search',
                   prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: const Color(0xFF8C98A8).withOpacity(0.2),
-                    ),
-                  ),
+
                 ),
                 // Optional. Styles the text in the search field
                 searchTextStyle: TextStyle(

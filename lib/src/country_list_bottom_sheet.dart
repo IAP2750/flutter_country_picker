@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'country.dart';
-import 'country_list_theme_data.dart';
+import '../country_picker.dart';
 import 'country_list_view.dart';
 
 void showCountryListBottomSheet({
@@ -20,31 +19,30 @@ void showCountryListBottomSheet({
   bool useSafeArea = false,
   bool useRootNavigator = false,
   bool moveAlongWithKeyboard = false,
-}) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    useSafeArea: useSafeArea,
-    useRootNavigator: useRootNavigator,
-    builder: (context) => _builder(
-      context,
-      onSelect,
-      favorite,
-      exclude,
-      countryFilter,
-      showPhoneCode,
-      countryListTheme,
-      searchAutofocus,
-      showWorldWide,
-      showSearch,
-      moveAlongWithKeyboard,
-      customFlagBuilder,
-    ),
-  ).whenComplete(() {
-    if (onClosed != null) onClosed();
-  });
-}
+}) =>
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      useSafeArea: useSafeArea,
+      useRootNavigator: useRootNavigator,
+      builder: (context) => _builder(
+        context,
+        onSelect,
+        favorite,
+        exclude,
+        countryFilter,
+        showPhoneCode,
+        countryListTheme,
+        searchAutofocus,
+        showWorldWide,
+        showSearch,
+        moveAlongWithKeyboard,
+        customFlagBuilder,
+      ),
+    ).whenComplete(() {
+      if (onClosed != null) onClosed();
+    });
 
 Widget _builder(
   BuildContext context,
@@ -62,48 +60,74 @@ Widget _builder(
 ) {
   final device = MediaQuery.of(context).size.height;
   final statusBarHeight = MediaQuery.of(context).padding.top;
-  final height = countryListTheme?.bottomSheetHeight ?? device - (statusBarHeight + (kToolbarHeight / 1.5));
   final width = countryListTheme?.bottomSheetWidth;
 
-  Color? _backgroundColor = countryListTheme?.backgroundColor ?? Theme.of(context).bottomSheetTheme.backgroundColor;
+  var backgroundColor = countryListTheme?.backgroundColor ??
+      Theme.of(context).bottomSheetTheme.backgroundColor;
 
-  if (_backgroundColor == null) {
+  if (backgroundColor == null) {
     if (Theme.of(context).brightness == Brightness.light) {
-      _backgroundColor = Colors.white;
+      backgroundColor = Colors.white;
     } else {
-      _backgroundColor = Colors.black;
+      backgroundColor = Colors.black;
     }
   }
 
-  final BorderRadius _borderRadius = countryListTheme?.borderRadius ??
+  final borderRadius = countryListTheme?.borderRadius ??
       const BorderRadius.only(
-        topLeft: Radius.circular(40.0),
-        topRight: Radius.circular(40.0),
+        topLeft: Radius.circular(40),
+        topRight: Radius.circular(40),
       );
-
   return Padding(
-    padding: moveAlongWithKeyboard ? MediaQuery.of(context).viewInsets : EdgeInsets.zero,
-    child: Container(
-      height: height,
-      width: width,
-      padding: countryListTheme?.padding,
-      margin: countryListTheme?.margin,
-      decoration: BoxDecoration(
-        color: _backgroundColor,
-        borderRadius: _borderRadius,
-      ),
-      child: CountryListView(
-        onSelect: onSelect,
-        exclude: exclude,
-        favorite: favorite,
-        countryFilter: countryFilter,
-        showPhoneCode: showPhoneCode,
-        countryListTheme: countryListTheme,
-        searchAutofocus: searchAutofocus,
-        showWorldWide: showWorldWide,
-        showSearch: showSearch,
-        customFlagBuilder: customFlagBuilder,
-      ),
+    padding: moveAlongWithKeyboard
+        ? MediaQuery.of(context).viewInsets
+        : EdgeInsets.zero,
+    child: DraggableScrollableSheet(
+      initialChildSize: 0.95,
+      minChildSize: 0.2,
+      maxChildSize: 0.95,
+      builder: (BuildContext context, ScrollController scrollController) {
+        return Container(
+          width: width,
+          padding: countryListTheme?.padding,
+          margin: countryListTheme?.margin,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: borderRadius,
+          ),
+          child: Stack(
+            alignment: AlignmentDirectional.topCenter,
+            children: [
+              Positioned(
+                top: 16,
+                child: Center(
+                  child: Container(
+                    width: 32,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+              CountryListView(
+                onSelect: onSelect,
+                scrollController: scrollController,
+                exclude: exclude,
+                favorite: favorite,
+                countryFilter: countryFilter,
+                showPhoneCode: showPhoneCode,
+                countryListTheme: countryListTheme,
+                searchAutofocus: searchAutofocus,
+                showWorldWide: showWorldWide,
+                showSearch: showSearch,
+                customFlagBuilder: customFlagBuilder,
+              ),
+            ],
+          ),
+        );
+      },
     ),
   );
 }

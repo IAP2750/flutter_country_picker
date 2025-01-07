@@ -1,18 +1,14 @@
-library country_picker;
-
+import 'package:country_picker/src/country_list_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
-import 'src/country.dart';
-import 'src/country_list_bottom_sheet.dart';
-import 'src/country_list_theme_data.dart';
-import 'src/country_list_view.dart';
+import '../country_picker.dart';
 
-export 'src/country.dart';
-export 'src/country_list_theme_data.dart';
-export 'src/country_list_view.dart' show CustomFlagBuilder;
-export 'src/country_localizations.dart';
-export 'src/country_parser.dart';
-export 'src/country_service.dart';
+export '../src/country.dart';
+export '../src/country_list_theme_data.dart';
+export '../src/country_list_view.dart' show CustomFlagBuilder;
+export '../src/country_localizations.dart';
+export '../src/country_parser.dart';
+export '../src/country_service.dart';
 
 /// Shows a bottom sheet containing a list of countries to select one.
 ///
@@ -68,8 +64,8 @@ void showCountryPicker({
   bool moveAlongWithKeyboard = false,
 }) {
   assert(
-    exclude == null || countryFilter == null,
-    'Cannot provide both exclude and countryFilter',
+  exclude == null || countryFilter == null,
+  'Cannot provide both exclude and countryFilter',
   );
   showCountryListBottomSheet(
     context: context,
