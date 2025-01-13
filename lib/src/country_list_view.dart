@@ -12,6 +12,7 @@ class CountryListView extends StatefulWidget {
     required this.scrollController,
     this.exclude,
     this.favorite,
+    this.chosen,
     this.countryFilter,
     this.showPhoneCode = false,
     this.countryListTheme,
@@ -20,9 +21,9 @@ class CountryListView extends StatefulWidget {
     this.showSearch = true,
     this.customFlagBuilder,
   }) : assert(
-          exclude == null || countryFilter == null,
-          'Cannot provide both exclude and countryFilter',
-        ), super(key: key);
+  exclude == null || countryFilter == null,
+  'Cannot provide both exclude and countryFilter',
+  ), super(key: key);
 
   /// Called when a country is select.
   ///
@@ -45,6 +46,10 @@ class CountryListView extends StatefulWidget {
   /// An optional [favorite] argument can be used to show countries
   /// at the top of the list. It takes a list of country code(iso2).
   final List<String>? favorite;
+
+  /// An optional [chosen] argument can be used to highlight countries
+  /// in the list. It takes a list of country code(iso2).
+  final List<String>? chosen;
 
   /// An optional argument for customizing the
   /// country list bottom sheet.
@@ -100,13 +105,13 @@ class _CountryListViewState extends State<CountryListView> {
 
     if (widget.exclude != null) {
       _countryList.removeWhere(
-        (element) => widget.exclude!.contains(element.countryCode),
+            (element) => widget.exclude!.contains(element.countryCode),
       );
     }
 
     if (widget.countryFilter != null) {
       _countryList.removeWhere(
-        (element) => !widget.countryFilter!.contains(element.countryCode),
+            (element) => !widget.countryFilter!.contains(element.countryCode),
       );
     }
 
@@ -136,7 +141,7 @@ class _CountryListViewState extends State<CountryListView> {
               controller: _searchController,
               textAlignVertical: TextAlignVertical.center,
               style:
-                  widget.countryListTheme?.searchTextStyle ?? _defaultTextStyle,
+              widget.countryListTheme?.searchTextStyle ?? _defaultTextStyle,
               decoration: widget.countryListTheme?.inputDecoration?.copyWith(
                 suffixIcon:  _searchController.selection.baseOffset > 0 ||
                     _searchController.selection.extentOffset > 0 ? GestureDetector(
@@ -157,9 +162,10 @@ class _CountryListViewState extends State<CountryListView> {
               onChanged: _filterSearchResults,
             ),
           ),
+        const SizedBox(height: 16),
         const Divider(
           thickness: 1,
-          height: 32,
+          height: 1,
           color: Color(0xffE8E9ED),
         ),
         if (_filteredList.isNotEmpty)
@@ -170,7 +176,7 @@ class _CountryListViewState extends State<CountryListView> {
               physics: const BouncingScrollPhysics(),
               children: [
                 if (_favoriteList != null && containsCountry) ...[
-                  ..._favoriteList!.map<Widget>(buildFavorite),
+                  ..._favoriteList!.map<Widget>(buildItem),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Divider(
@@ -181,7 +187,7 @@ class _CountryListViewState extends State<CountryListView> {
                   ),
                 ],
                 ..._filteredList.map<Widget>(
-                  _listRow,
+                  buildItem,
                 ),
               ],
             ),
@@ -191,20 +197,20 @@ class _CountryListViewState extends State<CountryListView> {
             padding: const EdgeInsets.only(right: 56, left: 56, top: 120),
             child: Text(
               'No results found.\nPlease check your request to '
-              'make sure it\'s correct.',
+                  'make sure it\'s correct.',
               style: widget.countryListTheme?.textStyle
                   ?.copyWith(fontSize: 14, color: const Color(0xff757680)),
               textAlign: TextAlign.center,
             ),
-          )
+          ),
       ],
     );
   }
 
-  Widget buildFavorite(Country country) {
-    return Padding(
+  Widget buildItem(Country country) {
+    return country.countryCode == widget.chosen?.first ? Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
           color: const Color(0xff3170D3).withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(16),
@@ -226,7 +232,7 @@ class _CountryListViewState extends State<CountryListView> {
           ],
         ),
       ),
-    );
+    ) : _listRow(country);
   }
 
   Widget _listRow(Country country, {bool isFavorite = false}) {
@@ -268,17 +274,17 @@ class _CountryListViewState extends State<CountryListView> {
                   children: [
                     Text(
                       CountryLocalizations.of(context)
-                              ?.countryName(countryCode: country.countryCode)
-                              ?.replaceAll(RegExp(r'\s+'), ' ') ??
+                          ?.countryName(countryCode: country.countryCode)
+                          ?.replaceAll(RegExp(r'\s+'), ' ') ??
                           country.name,
                       style: isFavorite
                           ? textStyle.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xff1C4483),
-                            )
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xff1C4483),
+                      )
                           : textStyle.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     if (widget.showPhoneCode && !country.iswWorldWide) ...[
                       const SizedBox(width: 15),
@@ -314,14 +320,14 @@ class _CountryListViewState extends State<CountryListView> {
   }
 
   Widget _emojiText(Country country) => Text(
-        country.iswWorldWide
-            ? '\uD83C\uDF0D'
-            : Utils.countryCodeToEmoji(country.countryCode),
-        style: TextStyle(
-          fontSize: widget.countryListTheme?.flagSize ?? 25,
-          fontFamilyFallback: widget.countryListTheme?.emojiFontFamilyFallback,
-        ),
-      );
+    country.iswWorldWide
+        ? '\uD83C\uDF0D'
+        : Utils.countryCodeToEmoji(country.countryCode),
+    style: TextStyle(
+      fontSize: widget.countryListTheme?.flagSize ?? 25,
+      fontFamilyFallback: widget.countryListTheme?.emojiFontFamilyFallback,
+    ),
+  );
 
   void _filterSearchResults(String query) {
     var searchResult = <Country>[];

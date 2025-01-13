@@ -10,6 +10,7 @@ void showCountryListBottomSheet({
   List<String>? favorite,
   List<String>? exclude,
   List<String>? countryFilter,
+  List<String>? chosen,
   bool showPhoneCode = false,
   CustomFlagBuilder? customFlagBuilder,
   CountryListThemeData? countryListTheme,
@@ -32,6 +33,7 @@ void showCountryListBottomSheet({
         favorite,
         exclude,
         countryFilter,
+        chosen,
         showPhoneCode,
         countryListTheme,
         searchAutofocus,
@@ -45,21 +47,20 @@ void showCountryListBottomSheet({
     });
 
 Widget _builder(
-  BuildContext context,
-  ValueChanged<Country> onSelect,
-  List<String>? favorite,
-  List<String>? exclude,
-  List<String>? countryFilter,
-  bool showPhoneCode,
-  CountryListThemeData? countryListTheme,
-  bool searchAutofocus,
-  bool showWorldWide,
-  bool showSearch,
-  bool moveAlongWithKeyboard,
-  CustomFlagBuilder? customFlagBuilder,
-) {
-  final device = MediaQuery.of(context).size.height;
-  final statusBarHeight = MediaQuery.of(context).padding.top;
+    BuildContext context,
+    ValueChanged<Country> onSelect,
+    List<String>? favorite,
+    List<String>? exclude,
+    List<String>? countryFilter,
+    List<String>? chosen,
+    bool showPhoneCode,
+    CountryListThemeData? countryListTheme,
+    bool searchAutofocus,
+    bool showWorldWide,
+    bool showSearch,
+    bool moveAlongWithKeyboard,
+    CustomFlagBuilder? customFlagBuilder,
+    ) {
   final width = countryListTheme?.bottomSheetWidth;
 
   var backgroundColor = countryListTheme?.backgroundColor ??
@@ -116,6 +117,7 @@ Widget _builder(
                 scrollController: scrollController,
                 exclude: exclude,
                 favorite: favorite,
+                chosen: chosen,
                 countryFilter: countryFilter,
                 showPhoneCode: showPhoneCode,
                 countryListTheme: countryListTheme,
