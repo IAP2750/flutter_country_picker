@@ -15,6 +15,7 @@ class CountryListView extends StatefulWidget {
     this.chosen,
     this.countryFilter,
     this.showPhoneCode = false,
+    this.showFlag = false,
     this.countryListTheme,
     this.searchAutofocus = false,
     this.showWorldWide = false,
@@ -32,6 +33,9 @@ class CountryListView extends StatefulWidget {
 
   /// An optional [showPhoneCode] argument can be used to show phone code.
   final bool showPhoneCode;
+
+  /// An optional [showFlag] argument can be used to show flag.
+  final bool showFlag;
 
   /// An optional [exclude] argument can be used to exclude(remove) one ore more
   /// country from the countries list. It takes a list of country code(iso2).
@@ -139,6 +143,7 @@ class _CountryListViewState extends State<CountryListView> {
             child: TextField(
               autofocus: _searchAutofocus,
               controller: _searchController,
+              cursorColor: const Color(0xff313135),
               textAlignVertical: TextAlignVertical.center,
               style:
               widget.countryListTheme?.searchTextStyle ?? _defaultTextStyle,
@@ -172,6 +177,7 @@ class _CountryListViewState extends State<CountryListView> {
           Expanded(
             child: ListView(
               shrinkWrap: true,
+              padding: const EdgeInsets.only(top: 16.0),
               controller: widget.scrollController,
               physics: const BouncingScrollPhysics(),
               children: [
@@ -237,8 +243,8 @@ class _CountryListViewState extends State<CountryListView> {
 
   Widget _listRow(Country country, {bool isFavorite = false}) {
     final textStyle = widget.countryListTheme?.textStyle ?? _defaultTextStyle;
-
     final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final showFlag = widget.showFlag;
 
     return Material(
       // Add Material Widget with transparent color
@@ -259,15 +265,15 @@ class _CountryListViewState extends State<CountryListView> {
           ),
           child: Row(
             children: <Widget>[
-              Row(
+              if (showFlag) Row(
                 children: [
                   if (widget.customFlagBuilder == null)
                     _flagWidget(country)
                   else
                     widget.customFlagBuilder!(country),
                 ],
-              ),
-              const SizedBox(width: 8),
+              ) else const SizedBox(height: 48,),
+              SizedBox(width: showFlag ? 0 : 8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
