@@ -273,7 +273,7 @@ class _CountryListViewState extends State<CountryListView> {
                     widget.customFlagBuilder!(country),
                 ],
               ) else const SizedBox(height: 48,),
-              SizedBox(width: showFlag ? 0 : 8),
+              SizedBox(width: showFlag ? 8 : 0),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
