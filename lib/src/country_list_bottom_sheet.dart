@@ -87,9 +87,9 @@ Widget _builder(
         ? MediaQuery.of(context).viewInsets
         : EdgeInsets.zero,
     child: DraggableScrollableSheet(
-      initialChildSize: 0.95,
+      initialChildSize: 0.9,
       minChildSize: 0.2,
-      maxChildSize: 0.95,
+      maxChildSize: 0.9,
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           width: width,

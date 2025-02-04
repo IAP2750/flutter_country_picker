@@ -134,7 +134,6 @@ class _CountryListViewState extends State<CountryListView> {
         .any((country) => country.name == _favoriteList?.first.name);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         const SizedBox(height: 36),
         if (widget.showSearch)
@@ -178,7 +177,6 @@ class _CountryListViewState extends State<CountryListView> {
             child: ListView(
               shrinkWrap: true,
               padding: const EdgeInsets.only(top: 16.0),
-              controller: widget.scrollController,
               physics: const BouncingScrollPhysics(),
               children: [
                 if (_favoriteList != null && containsCountry) ...[
